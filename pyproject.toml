@@ -11,3 +11,6 @@ dependencies = [
 [project.scripts]
 dxf2drill = "dxf2drill:main"
 dxfstrip = "dxfstrip:main"
+
+[tool.setuptools]
+py-modules = ["dxf2drill", "dxfstrip"]
