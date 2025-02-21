@@ -41,5 +41,23 @@ For example, to extract only holes smaller than 10 units of diameter (radius 5
 units, DXF is unitless) on layer "0":
 
 ```bash
-$> dxf2drill -e 'radius < 5 & layer="0"' example.dxf > example.xnc
+$> dxf2drill -e 'radius < 5 & layer == "0"' example.dxf > example.xnc
+```
+
+## dxfstrip tool
+
+This repository also includes the `dxfstrip` tool, which is installed alongside
+dxf2drill. It is a simple script that uses ezdxf to delete selected entities
+from a DXF file, and outputs the resulting "stripped" DXF to stdout.
+
+This can be useful to remove all `CIRCLE`s which were exported to XNC:
+
+```bash
+$> dxfstrip 'CIRCLE[radius < 5]' example.dxf > example_no_holes.dxf
+```
+
+Another example, to remove all text (DXF `MTEXT` entities) on layer "0":
+
+```bash
+$> dxfstrip 'MTEXT[layer == 0]' example.dxf > example_no_text.dxf
 ```
