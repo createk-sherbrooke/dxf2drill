@@ -10,4 +10,4 @@ dependencies = [
 
 [project.scripts]
 dxf2drill = "dxf2drill:main"
-
+dxfstrip = "dxfstrip:main"
