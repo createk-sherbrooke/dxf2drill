@@ -13,5 +13,4 @@ dxf2drill = "dxf2drill:main"
 dxfstrip = "dxfstrip:main"
 
 [tool.setuptools]
-#packages = ["dxf2drill", "dxfstrip"]
-py-modules = []
+py-modules = ["dxf2drill", "dxfstrip"]
