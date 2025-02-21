@@ -26,10 +26,13 @@ class Circle:
     dia: float
 
 
-def get_circles(dxf: Drawing) -> list[Circle]:
+def get_circles(dxf: Drawing, filter_expr: str) -> list[Circle]:
     msp = dxf.modelspace()
     result = []
-    for c in msp.query("CIRCLE"):
+    query = 'CIRCLE'
+    if filter_expr:
+        query += f"[{filter_expr}]"
+    for c in msp.query(query):
         result.append(
             Circle(
                 center=Vec2(x=c.dxf.center.x, y=c.dxf.center.y),
@@ -46,16 +49,6 @@ def group_circles_by_dia(circles: list[Circle]) -> dict[float, list[Circle]]:
             result[c.dia] = []
         result[c.dia].append(c)
     return result
-
-
-def get_args():
-    parser = argparse.ArgumentParser(
-        prog="dxf2drill",
-        description="Extract circles from DXF file to XNC drill file",
-        epilog="Note: output is written to stdout",
-    )
-    parser.add_argument("filename", help="Input DXF file")
-    return parser.parse_args()
 
 
 def fmt_number(x: float, n: int = 3) -> str:
@@ -102,10 +95,25 @@ def generate_xnc(circles: list[Circle]) -> Generator[str, None, None]:
     yield "M30"  # End of file
 
 
+def get_args():
+    parser = argparse.ArgumentParser(
+        prog="dxf2drill",
+        description="Extract circles from DXF file to XNC drill file",
+        epilog="Note: output is written to stdout",
+    )
+    parser.add_argument("filename", help="Input DXF file")
+    parser.add_argument(
+        "-e",
+        "--filter-expression",
+        help="Filter expression used to select circles converted to drill hits",
+    )
+    return parser.parse_args()
+
+
 def main():
     args = get_args()
     dxf = ezdxf.readfile(args.filename)
-    circles = get_circles(dxf)
+    circles = get_circles(dxf, args.filter_expression)
 
     for cmd in generate_xnc(circles):
         sys.stdout.write(cmd)
